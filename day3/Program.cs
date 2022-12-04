@@ -1,5 +1,5 @@
 ﻿int sum = 0;
-
+List<Char> type = new List<Char>();
 string[] lines = System.IO.File.ReadAllLines(@"input.txt");
 foreach (var rucksacks in lines)
 {
@@ -10,24 +10,20 @@ foreach (var rucksacks in lines)
     {
         if (last.Contains(letter))
         {
-            if (Char.IsUpper(letter))
+            if (!(type.Contains(letter)))
             {
-                sum += System.Convert.ToInt32(letter) - 38;
+                type.Add(letter);
             }
-            else
-            {
-                sum += System.Convert.ToInt32(letter) - 96;
-            }
-            break;
         }
     }
+    sum += Converting.ConvertToInt(type);
+    type = new List<Char>();
 }
 
 Console.WriteLine($"Sum of the items that appears in both compartments of each rucksack is {sum}.");
 
 // Part two
 int newSum = 0;
-List<Char> type = new List<Char>();
 for (var i = 0; i <= lines.Length - 1; i = i + 3)
 {
     foreach (var letter in lines[i])
@@ -40,19 +36,9 @@ for (var i = 0; i <= lines.Length - 1; i = i + 3)
             }
         }
     }
-    foreach (var letter in type)
-    {
-        if (Char.IsUpper(letter))
-        {
-            newSum += System.Convert.ToInt32(letter) - 38;
-        }
-        else
-        {
-            newSum += System.Convert.ToInt32(letter) - 96;
-        }
-    }
+    newSum += Converting.ConvertToInt(type);
     type = new List<Char>();
 }
 
-Console.WriteLine($"The som of the item type that corresponds to the badges of each three-Elf group is {newSum}.");
+Console.WriteLine($"The sum of the item type that corresponds to the badges of each three-Elf group is {newSum}.");
 
