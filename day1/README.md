@@ -39,8 +39,6 @@ In case the Elves get hungry and need extra snacks, they need to know which Elf 
 
 Find the Elf carrying the most Calories. How many total Calories is that Elf carrying?
 
-Your puzzle answer was `69289`.
-
 
 ## --- Part Two ---
 
@@ -51,5 +49,3 @@ To avoid this unacceptable situation, the Elves would instead like to know the t
 In the example above, the top three Elves are the fourth Elf (with 24000 Calories), then the third Elf (with 11000 Calories), then the fifth Elf (with 10000 Calories). The sum of the Calories carried by these three elves is 45000.
 
 Find the top three Elves carrying the most Calories. How many Calories are those Elves carrying in total?
-
-Your puzzle answer was `205615`.
