@@ -1,23 +1,21 @@
 static class Charnumb
 {
-    public static int NumberOfChar(string line, int distinct_char)
+    public static int NumberOfChar(string datastream, int distinct_char)
     {
-        string word = "";
-        int count = 0;
-        foreach (var letter in line)
+        string marker = "";
+        for (var i = 0; i < datastream.Length; i++)
         {
-            if (word.Contains(letter))
+            if (marker.Contains(datastream[i]))
             {
-                int index = word.IndexOf(letter);
-                word = word.Remove(0, index + 1);
+                int index = marker.IndexOf(datastream[i]);
+                marker = marker.Remove(0, index + 1);
             }
-            word += letter;
-            count += 1;
-            if (word.Length >= distinct_char)
+            marker += datastream[i];
+            if (marker.Length >= distinct_char)
             {
-                break;
+                return i;
             }
         }
-        return count;
+        return 0;
     }
 }
