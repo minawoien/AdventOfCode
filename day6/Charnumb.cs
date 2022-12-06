@@ -13,8 +13,6 @@ static class Charnumb
             }
             word += letter;
             count += 1;
-
-            // For part 1, change to 4 instead of 14
             if (word.Length >= distinct_char)
             {
                 break;
