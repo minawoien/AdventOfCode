@@ -13,7 +13,7 @@ static class Charnumb
             marker += datastream[i];
             if (marker.Length >= distinct_char)
             {
-                return i;
+                return i + 1;
             }
         }
         return 0;
