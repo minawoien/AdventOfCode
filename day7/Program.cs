@@ -65,22 +65,18 @@ foreach (var item in list)
 }
 
 int end = 0;
+List<int> sums = new List<int>();
 foreach (var item in values)
 {
     if (item.Value < 100000)
     {
         end += item.Value;
     }
+    sums.Add(item.Value);
 
 }
 Console.WriteLine(end);
 
-// Part 2
-List<int> sums = new List<int>();
-foreach (var item in values)
-{
-    sums.Add(item.Value);
-}
 sums.Sort();
 sums.Reverse();
 int numb = 30000000 - (70000000 - sums[0]);
