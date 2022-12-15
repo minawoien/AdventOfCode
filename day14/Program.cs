@@ -65,12 +65,6 @@ foreach (var item in rocks_position)
 }
 // Part 2: Add rocks at highest y+2
 y_pos += 2;
-decimal x_pos = 800;
-for (var i = 200; i < x_pos; i++)
-{
-    rocks_position.Add((i, y_pos));
-}
-// sand get out from 500,0
 var k = 0;
 (decimal x, decimal y) sand = (500, 0);
 (decimal x, decimal y) sand_new_position = (0, 0);
