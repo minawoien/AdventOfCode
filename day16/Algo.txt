@@ -1,0 +1,52 @@
+var count = 0;
+var pressure = 0;
+var start = flow_rates.Keys.First();
+var func1 = move(start, flow_rates, tunnel_leads_to, count, pressure);
+while (count <= 30)
+{
+    // for (var i = 0; i < 5; i++)
+    // {
+    var func2 = move(func1.valve, flow_rates, tunnel_leads_to, func1.count, func1.press);
+    func1 = func2;
+    count = func1.count;
+    Console.WriteLine(func1.press);
+}
+
+static (int press, int count, string valve) move(string key, Dictionary<string, int> flow_rates, Dictionary<string, List<string>> tunnel_leads_to, int count, int pressure)
+{
+    Console.WriteLine(key);
+    if (flow_rates[key] == 0)
+    {
+        // Move to first valve if it is not open
+        (string, int) move_to = ("hallo", -1);
+        foreach (var tunnel_valve in tunnel_leads_to[key])
+        {
+            if (flow_rates[tunnel_valve] > move_to.Item2)
+            {
+                move_to.Item1 = tunnel_valve;
+                move_to.Item2 = flow_rates[tunnel_valve];
+            }
+        }
+        count += 1;
+        return (pressure, count, move_to.Item1);
+    }
+    else
+    {
+        count += 1;
+        pressure += flow_rates[key];
+        flow_rates[key] = 0;
+        // Move to first valve if it is not open
+        // Move to first valve if it is not open
+        (string, int) move_to = ("hallo", -1);
+        foreach (var tunnel_valve in tunnel_leads_to[key])
+        {
+            if (flow_rates[tunnel_valve] > move_to.Item2)
+            {
+                move_to.Item1 = tunnel_valve;
+                move_to.Item2 = flow_rates[tunnel_valve];
+            }
+        }
+        count += 1;
+        return (pressure, count, move_to.Item1);
+    }
+}

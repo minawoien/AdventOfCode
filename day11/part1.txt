@@ -1,0 +1,105 @@
+string[] lines = System.IO.File.ReadAllLines(@"input2.txt");
+Dictionary<int, List<int>> worry_levels = new Dictionary<int, List<int>>();
+Dictionary<int, int> inspected = new Dictionary<int, int>();
+int current_monkey = 0;
+
+for (var i = 0; i < lines.Length; i += 7)
+{
+    // Find current monkey
+    var item = lines[i].Split(" ");
+    current_monkey = Int32.Parse(item[1].Remove(item[1].Length - 1, 1));
+
+    // Find Starting items
+    var start = lines[i + 1].Split(":");
+    var starting_items = start[1].Split(",");
+    List<int> start_items = new List<int>();
+    foreach (var worry_level in starting_items)
+    {
+        start_items.Add(Int32.Parse(worry_level));
+    }
+    worry_levels.Add(current_monkey, start_items);
+    inspected.Add(current_monkey, 0);
+}
+
+for (var j = 0; j < 20; j++)
+{
+    for (var i = 0; i < lines.Length; i += 7)
+    {
+        int count = 0;
+        // Find current monkey
+        var item = lines[i].Split(" ");
+        current_monkey = Int32.Parse(item[1].Remove(item[1].Length - 1, 1));
+
+        // Find Starting items
+        // var start = lines[i + 1].Split(":");
+        // var starting_items = start[1].Split(",");
+        var starting_items = worry_levels[current_monkey];
+
+        // Find operation
+        var operation = lines[i + 2].Split(":");
+        var ch = operation[1].Split(" ");
+        int x = 0;
+
+        // Find test
+        var test = lines[i + 3].Split(" ");
+        int numb = Int32.Parse(test[test.Length - 1]);
+
+        // Find next monkey
+        var next_true = lines[i + 4].Split(" ");
+        var t_next = Int32.Parse(next_true[next_true.Length - 1]);
+        var next_false = lines[i + 5].Split(" ");
+        var f_next = Int32.Parse(next_false[next_false.Length - 1]);
+        Console.WriteLine($"true: {t_next}, flase: {f_next}");
+
+        foreach (var worry_level in starting_items)
+        {
+            int new_worry = 0;
+            if (Int32.TryParse(ch[5], out x))
+            {
+                if (ch[4] == "*")
+                {
+                    new_worry = worry_level * Int32.Parse(ch[5]) / 3;
+                }
+                else
+                {
+                    new_worry = (worry_level + Int32.Parse(ch[5])) / 3;
+                }
+            }
+            else
+            {
+                if (ch[4] == "*")
+                {
+                    new_worry = worry_level * worry_level / 3;
+                }
+                else
+                {
+                    new_worry = (worry_level + worry_level) / 3;
+                }
+            }
+            if (new_worry % numb == 0)
+            {
+                worry_levels[t_next].Add(new_worry);
+            }
+            else
+            {
+                worry_levels[f_next].Add(new_worry);
+            }
+            count++;
+        }
+        worry_levels[current_monkey] = new List<int>();
+        inspected[current_monkey] += count;
+    }
+}
+foreach (var item in worry_levels)
+{
+    Console.WriteLine($"key: {item.Key}");
+    foreach (var i in item.Value)
+    {
+        Console.WriteLine(i);
+    }
+}
+
+var inspected_list = inspected.ToList();
+inspected_list.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+inspected_list.Reverse();
+Console.WriteLine(inspected_list[0].Value * inspected_list[1].Value);

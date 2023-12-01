@@ -1,108 +1,116 @@
 ﻿string[] lines = System.IO.File.ReadAllLines(@"input2.txt");
-List<(int x, int y, char sign)> map = new List<(int, int, char)>() { (1, -1, '.') };
-for (var y = 0; y < lines.Length; y++)
+List<Char> signs = new List<Char>() { '<', '>', 'v', '^' };
+List<List<(int x, int y, char sign)>> map = new List<List<(int, int, char)>>();
+for (var y = 1; y < lines.Length - 1; y++)
 {
-    for (var x = 0; x < lines[y].Length; x++)
+    List<(int x, int y, char sign)> row_map = new List<(int x, int y, char sign)>();
+    for (var x = 1; x < lines[y].Length - 1; x++)
     {
-        if (lines[y][x] != '.')
-        {
-            map.Add((x, y, lines[y][x]));
-        }
+        row_map.Add((x - 1, y - 1, lines[y][x]));
     }
+    map.Add(row_map);
 }
-int x_length = lines[0].Length - 1;
-int y_length = lines.Length - 1;
-(int x, int y) position = (1, 0);
-(int x, int y) end_position = (x_length - 1, y_length);
-int minute = 0;
+(int x, int y) position = (0, -1);
+(int x, int y) end_position = (map[0].Count - 1, map.Count);
 Console.WriteLine($"Start: {position}");
 Console.WriteLine($"End: {end_position}");
-
-while (position != end_position)
+foreach (var row in map)
 {
-    map = move_blizzard(map, x_length, y_length);
-    position = move_position(position, map);
-    minute += 1;
-}
-Console.WriteLine(minute);
-
-static (int, int) move_position((int x, int y) position, List<(int x, int y, char sign)> map)
-{
-    var position_map = map.Select(item => (item.x, item.y)).ToList();
-    if (!(position_map.Contains((position.x + 1, position.y))))
+    foreach (var item in row)
     {
-        Console.WriteLine("move right");
-        position = (position.x + 1, position.y);
+        Console.WriteLine(item);
     }
-    else if (!(position_map.Contains((position.x, position.y + 1))))
-    {
-        Console.WriteLine("move down");
-        position = (position.x, position.y + 1);
-    }
-    else if (!(position_map.Contains((position.x, position.y - 1))))
-    {
-        Console.WriteLine("move up");
-        position = (position.x, position.y - 1);
-    }
-    else if (!(position_map.Contains((position.x - 1, position.y))))
-    {
-        Console.WriteLine("move left");
-        position = (position.x - 1, position.y);
-    }
-    else
-    {
-        Console.WriteLine("dont move");
-    }
-    Console.WriteLine(position);
-
-    return position;
 }
 
+// Create a queue for the positions and minute, add the first position to the queue
+var queue = new Queue<(int, int, int)>();
+queue.Enqueue((position.x, position.y, 0));
 
-static List<(int x, int y, char sign)> move_blizzard(List<(int x, int y, char sign)> map, int x_length, int y_length)
-{
-    var wall = map.Select(item => item).Where(item => item.sign == '#').ToList();
-    var map_right = map.Select(item => (item.x + 1, item.y, item.sign)).Where(item => item.sign == '>').ToList();
-    var map_down = map.Select(item => (item.x, item.y + 1, item.sign)).Where(item => item.sign == 'v').ToList();
-    var map_up = map.Select(item => (item.x, item.y - 1, item.sign)).Where(item => item.sign == '^').ToList();
-    var map_left = map.Select(item => (item.x - 1, item.y, item.sign)).Where(item => item.sign == '<').ToList();
-    map = new List<(int x, int y, char sign)>() { (1, -1, '.') };
-    map.AddRange(wall);
-    map.AddRange(map_right);
-    map.AddRange(map_down);
-    map.AddRange(map_up);
-    map.AddRange(map_left);
-    map = move_from_wall(map, x_length, y_length);
-    return map;
-}
+// Create a hash set to avoid adding the same positions to the queue
+var visited = new HashSet<(int, int)>();
+visited.Add(position);
 
-static List<(int x, int y, char sign)> move_from_wall(List<(int x, int y, char sign)> map, int x_length, int y_length)
+while (queue.Count > 0)
 {
-    List<(int x, int y, char sign)> move_map = new List<(int x, int y, char sign)>();
-    foreach (var move in map)
+    // Remove the first position in the queue
+    var (x, y, distance) = queue.Dequeue();
+    // Loop trough the neighbor right, left, over and under
+    // column: new x, row: new y
+
+    foreach ((int column, int row) in new (int, int)[] { (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1) })
     {
-        var y = move.y;
-        var x = move.x;
-        if (move.sign != '#')
+        if (row == end_position.y && column == end_position.x)
         {
-            if (move.y == y_length)
-            {
-                y = 1;
-            }
-            else if (move.x == x_length)
-            {
-                x = 1;
-            }
-            else if (move.x == 0)
-            {
-                x = x_length - 1;
-            }
-            else if (move.y == 0)
-            {
-                y = y_length - 1;
-            }
+            Console.WriteLine("END");
+            return;
         }
-        move_map.Add((x, y, move.sign));
+        if (row < 0 || column < 0 || row >= map.Count || column >= map[0].Count)
+        {
+            continue;
+        }
+        //! remove?
+        if (visited.Contains((column, row)))
+        {
+            continue;
+        }
+        if (signs.Contains(map[row][column].sign))
+        {
+            continue;
+        }
+        Console.WriteLine(map[row][column]);
     }
-    return move_map;
+}
+
+
+// static (int, int) move_position((int x, int y) position, List<(int x, int y, char sign)> map)
+// {
+//     var position_map = map.Select(item => (item.x, item.y)).ToList();
+//     if (!(position_map.Contains((position.x + 1, position.y))))
+//     {
+//         Console.WriteLine("move right");
+//         position = (position.x + 1, position.y);
+//     }
+//     else if (!(position_map.Contains((position.x, position.y + 1))))
+//     {
+//         Console.WriteLine("move down");
+//         position = (position.x, position.y + 1);
+//     }
+//     else if (!(position_map.Contains((position.x, position.y - 1))))
+//     {
+//         Console.WriteLine("move up");
+//         position = (position.x, position.y - 1);
+//     }
+//     else if (!(position_map.Contains((position.x - 1, position.y))))
+//     {
+//         Console.WriteLine("move left");
+//         position = (position.x - 1, position.y);
+//     }
+//     else
+//     {
+//         Console.WriteLine("dont move");
+//     }
+//     Console.WriteLine(position);
+
+//     return position;
+// }
+
+
+static List<List<(int x, int y, char sign)>> move_blizzard(List<List<(int x, int y, char sign)>> map)
+{
+    List<List<(int x, int y, char sign)>> new_map = new List<List<(int x, int y, char sign)>>();
+    foreach (var row_map in map)
+    {
+        var map_right = row_map.Select(item => (item.x + 1, item.y, item.sign)).Where(item => item.sign == '>').ToList();
+        var map_down = row_map.Select(item => (item.x, item.y + 1, item.sign)).Where(item => item.sign == 'v').ToList();
+        var map_up = row_map.Select(item => (item.x, item.y - 1, item.sign)).Where(item => item.sign == '^').ToList();
+        var map_left = row_map.Select(item => (item.x - 1, item.y, item.sign)).Where(item => item.sign == '<').ToList();
+        List<(int x, int y, char sign)> new_row_map = new List<(int x, int y, char sign)>();
+        new_row_map.AddRange(map_right);
+        new_row_map.AddRange(map_down);
+        new_row_map.AddRange(map_up);
+        new_row_map.AddRange(map_left);
+        new_map.Add(new_row_map);
+    }
+
+    return new_map;
 }

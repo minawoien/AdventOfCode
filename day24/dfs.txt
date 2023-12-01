@@ -1,0 +1,19 @@
+// Create a queue for the positions and distance, add the first position to the queue
+var queue = new Queue<(int, int, int)>();
+queue.Enqueue((position.x, position.y, 0));
+
+// Create a hash set to avoid adding the same positions to the queue
+var visited = new HashSet<(int, int)>();
+visited.Add(position);
+
+while (queue.Count > 0)
+{
+    // Remove the first position in the queue
+    var (x, y, distance) = queue.Dequeue();
+    // Loop trough the neighbor right, left, over and under
+    // column: new x, row: new y
+    foreach ((int column, int row) in new (int, int)[] { (x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1) })
+    {
+
+    }
+}

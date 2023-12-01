@@ -1,0 +1,26 @@
+// int row_numb = 10;
+// int higher_limit = 20;
+// var distress_beacon_x = 0;
+// var distress_beacon_y = 0;
+// for (var i = lower_limit; i < higher_limit + 1; i++)
+// {
+//     for (var j = lower_limit; j < higher_limit + 1; j++)
+//     {
+//         if (!(signals.Contains((i, j))))
+//         {
+//             distress_beacon_x = i;
+//             distress_beacon_y = j;
+//         }
+//     }
+// }
+
+//var result = Enumerable.Range(lower_limit, higher_limit + 1);
+
+//var frequency = distress_beacon_x * 4000000 + distress_beacon_y;
+//Console.WriteLine($"The only possible position for the distress beacon's tuning frequency is {frequency}");
+
+// if (j <= higher_limit && j >= lower_limit && i <= higher_limit && i >= lower_limit)
+// {
+//     Console.WriteLine($"{i}, {j}");
+//     signals.Add((i, j));
+// }
